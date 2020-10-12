@@ -16,13 +16,12 @@ namespace BikeStoreOrders.Application.Orders
         public DateTime ShippedDate { get; set; }
         public int StoreId { get; set; }
         public int StaffId { get; set; }
-        [JsonIgnore]
         public Customer Customer { get; set; }
         [JsonIgnore]
         public Staff Staff { get; set; }
         [JsonIgnore]
         public Store Store { get; set; }
-        public ICollection<OrderItem> OrderItem { get; set; }
+        public ICollection<OrderItem> OrderItems { get; set; }
 
     }
 }

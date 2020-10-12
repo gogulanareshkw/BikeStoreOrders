@@ -20,6 +20,7 @@ namespace BikeStoreOrders.Infrastructure.Persistent
         public DbSet<Order> Orders { get; set; }
         public DbSet<Store> Stores { get; set; }
         public DbSet<Staff> Staffs { get; set; }
+        public DbSet<Product> Products { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
 
         public Task SaveChangesAsync()

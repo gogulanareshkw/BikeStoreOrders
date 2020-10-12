@@ -27,9 +27,9 @@ namespace BikeStoreOrders.Application.Orders.Queries
             using var dbContext = _dataContextFactory.SpawnDbContext();
             var list = await dbContext.Orders
                 .Include(c=> c.Customer)
-                                .Include(s => s.Staff)
+                .Include(s => s.Staff)
                 .Include(s => s.Store)
-                .Include(o => o.OrderItems)
+                .Include(o => o.OrderItems).ThenInclude(p => p.Product)
                 .ToListAsync(cancellationToken);
             return _mapper.Map<IEnumerable<GetOrdersResponseDto>>(list);
         }

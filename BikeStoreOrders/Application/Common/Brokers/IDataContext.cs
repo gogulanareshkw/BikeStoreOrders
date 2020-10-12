@@ -14,6 +14,7 @@ namespace BikeStoreOrders.Application.Common.Brokers
         DbSet<Order> Orders { get; set; }
         DbSet<Store> Stores { get; set; }
         DbSet<Staff> Staffs { get; set; }
+        DbSet<Product> Products { get; set; }
         DbSet<OrderItem> OrderItems { get; set; }
         DatabaseFacade Database { get; }
         Task SaveChangesAsync();

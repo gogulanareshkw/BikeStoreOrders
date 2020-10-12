@@ -18,6 +18,6 @@ namespace BikeStoreOrders.Domain.Common
         //        public Customer Customer { get; set; }
         public Staff Staff { get; set; }
         public Store Store { get; set; }
-        public OrderItem OrderItem { get; set; }
+        public ICollection<OrderItem> OrderItems { get; set; }
     }
 }
