@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace BikeStoreOrders.Application.Orders.Commands
 {
-    public class CreateOrderCommand : IRequest<OrderResponseDto>
+    public class UpdateOrderCommand : IRequest<UpdateOrderResponseDto>
     {
-        public CreateOrderRequestDto CreateOrderRequestDto { get; set; }
+        public UpdateOrderRequestDto UpdateOrderRequestDto { get; set; }
     }
 }

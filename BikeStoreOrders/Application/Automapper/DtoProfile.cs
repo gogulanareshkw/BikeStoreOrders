@@ -16,6 +16,7 @@ namespace BikeStoreOrders.Application.Automapper
         {
             CreateMap<Customer, CustomerResponseDto>();
             CreateMap<OrderResults, OrderResponseDto>();
+            CreateMap<OrderResults, UpdateOrderResponseDto>();
             CreateMap<Order, GetOrdersResponseDto>();
         }
     }

@@ -14,51 +14,56 @@ using System.Threading.Tasks;
 
 namespace BikeStoreOrders.Application.Orders.Commands
 {
-    public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, OrderResponseDto>
+    public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, UpdateOrderResponseDto>
     {
         private readonly IConfiguration _configuration;
         private readonly IDataContextFactory _dataContextFactory;
         private readonly IMapper _mapper;
-        public CreateOrderCommandHandler(IDataContextFactory dataContextFactory, IMapper mapper, IConfiguration configuration)
+        public UpdateOrderCommandHandler(IDataContextFactory dataContextFactory, IMapper mapper, IConfiguration configuration)
         {
             _dataContextFactory = dataContextFactory ?? throw new ArgumentNullException(nameof(dataContextFactory));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
-        public async Task<OrderResponseDto> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
+        public async Task<UpdateOrderResponseDto> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
         {
+            var OrderId = new SqlParameter("@OrderId", SqlDbType.Int)
+            {
+                Value = request.UpdateOrderRequestDto.OrderId
+            };
+            var OrderItemId = new SqlParameter("@OrderItemId", SqlDbType.Int)
+            {
+                Value = request.UpdateOrderRequestDto.OrderItemId
+            };
             var CustId = new SqlParameter("@CustId", SqlDbType.Int)
             {
-                Value = request.CreateOrderRequestDto.CustomerId
+                Value = request.UpdateOrderRequestDto.CustomerId
             };
             var StaffId = new SqlParameter("@StaffId", SqlDbType.Int)
             {
-                Value = request.CreateOrderRequestDto.StaffId
+                Value = request.UpdateOrderRequestDto.StaffId
             };
             var StoreId = new SqlParameter("@StoreId", SqlDbType.Int)
             {
-                Value = request.CreateOrderRequestDto.StoreId
+                Value = request.UpdateOrderRequestDto.StoreId
             };
             var ProductId = new SqlParameter("@ProductId", SqlDbType.Int)
             {
-                Value = request.CreateOrderRequestDto.ProductId
+                Value = request.UpdateOrderRequestDto.ProductId
             };
             var Quantity = new SqlParameter("@Quantity", SqlDbType.Int)
             {
-                Value = request.CreateOrderRequestDto.Quantity
+                Value = request.UpdateOrderRequestDto.Quantity
             };
-            var OrderDate = new SqlParameter("@OrderDate", SqlDbType.DateTime2)
+            var OrderStatus = new SqlParameter("@OrderStatus", SqlDbType.VarChar, 255)
             {
-                Value = DateTime.UtcNow
+                Value = request.UpdateOrderRequestDto.OrderStatus
             };
-            var ShippedDate = new SqlParameter("@ShippedDate", SqlDbType.DateTime2)
-            {
-                Value = DateTime.UtcNow.AddDays(_configuration.GetValue<int>("AppSettings:ExpectingDeliveryInDays"))
-            };
-            var OrderId = new SqlParameter("@OrderId", SqlDbType.Int)
-            {
-                Direction = ParameterDirection.Output
-            };
+
+            //var ShippedDate = new SqlParameter("@ShippedDate", SqlDbType.DateTime2)
+            //{
+            //    Value = DateTime.UtcNow.AddDays(_configuration.GetValue<int>("AppSettings:ExpectingDeliveryInDays"))
+            //};
             var IsSuccess = new SqlParameter("@IsError", SqlDbType.Bit)
             {
                 Direction = ParameterDirection.Output
@@ -70,10 +75,9 @@ namespace BikeStoreOrders.Application.Orders.Commands
 
 
             bool? isSuccess = null;
-            int? newOrderId = null;
             string message = "";
             using var dbcontext = _dataContextFactory.SpawnDbContext();
-            var result = await dbcontext.Database.ExecuteSqlInterpolatedAsync($"EXEC PlaceNewOrder @CustId={CustId.Value}, @StaffId={StaffId.Value}, @StoreId={StoreId.Value}, @ProductId={ProductId.Value}, @Quantity={Quantity.Value}, @OrderDate={OrderDate.Value}, @ShippedDate={ShippedDate.Value}, @NewOrderId={OrderId} out, @IsSuccess={IsSuccess} out, @ResponseMessage={ResponseMessage} out");
+            var result = await dbcontext.Database.ExecuteSqlInterpolatedAsync($"EXEC updateOrderDetails @OrderId={OrderId.Value}, @OrderItemId={OrderId.Value}, @CustId={CustId.Value}, @StaffId={StaffId.Value}, @StoreId={StoreId.Value}, @ProductId={ProductId.Value}, @Quantity={Quantity.Value}, @OrderStatus={OrderStatus.Value}, @IsSuccess={IsSuccess} out, @ResponseMessage={ResponseMessage} out");
             if (IsSuccess.Value != DBNull.Value)
             {
                 isSuccess = (bool)IsSuccess.Value;
@@ -82,17 +86,16 @@ namespace BikeStoreOrders.Application.Orders.Commands
             {
                 message = (string)ResponseMessage.Value;
             }
-            if (OrderId.Value != DBNull.Value)
-            {
-                newOrderId = (int)OrderId.Value;
-            }
             await dbcontext.SaveChangesAsync().ConfigureAwait(false);
-            var entity = new OrderResults {
-                OrderId = newOrderId,
+            var entity = new OrderResults
+            {
                 Success = isSuccess,
                 Message = message
             };
-            return _mapper.Map<OrderResponseDto>(entity);
+            return _mapper.Map<UpdateOrderResponseDto>(entity);
+
+
+
         }
     }
 }

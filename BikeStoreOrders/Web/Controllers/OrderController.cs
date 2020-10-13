@@ -34,13 +34,24 @@ namespace BikeStoreOrders.Web.Controllers
 
         [Route("order")]
         [HttpPost]
-        public async Task<IActionResult> CreateOrder(OrderRequestDto orderRequestDto)
+        public async Task<IActionResult> CreateOrder(CreateOrderRequestDto createOrderRequestDto)
         {
             return Ok(await _mediator.Send(new CreateOrderCommand
             {
-                OrderRequestDto = orderRequestDto
+                CreateOrderRequestDto = createOrderRequestDto
             }));
         }
+
+        [Route("order")]
+        [HttpPut]
+        public async Task<IActionResult> UpdateOrder(UpdateOrderRequestDto updateOrderRequestDto)
+        {
+            return Ok(await _mediator.Send(new UpdateOrderCommand
+            {
+                UpdateOrderRequestDto = updateOrderRequestDto
+            }));
+        }
+
 
     }
 }

@@ -15,8 +15,10 @@ namespace BikeStoreOrders.Application.Automapper
         public EntityProfile()
         {
             CreateMap<CustomerRequestDto, Customer>();
-            CreateMap<OrderRequestDto, OrderResults>();
-            CreateMap<OrderRequestDto, Order>();
+            CreateMap<CreateOrderRequestDto, OrderResults>();
+            CreateMap<CreateOrderRequestDto, Order>();
+            CreateMap<UpdateOrderRequestDto, OrderResults>();
+            CreateMap<UpdateOrderRequestDto, Order>();
         }
     }
 }
