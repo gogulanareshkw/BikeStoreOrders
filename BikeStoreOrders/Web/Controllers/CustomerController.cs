@@ -6,12 +6,15 @@ using BikeStoreOrders.Application.Customers;
 using BikeStoreOrders.Application.Customers.Commands;
 using BikeStoreOrders.Application.Customers.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BikeStoreOrders.Web.Controllers
 {
     [Route("api")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     public class CustomerController : ControllerBase
     {
